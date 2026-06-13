@@ -1,0 +1,20 @@
+# Python Caches & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller Build Artifacts
+build/
+
+# IDE / System Settings
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs & Temporary Files
+*.log
+scratch/
+temp/

@@ -1,0 +1,4 @@
+pynput
+customtkinter
+mido
+pyinstaller
