@@ -6,6 +6,11 @@ __pycache__/
 # PyInstaller Build & Dist Artifacts
 build/
 dist/
+*.spec
+
+# Assets & App Specs (Local only)
+icon.ico
+icon.png
 
 # IDE / System Settings
 .vscode/
