@@ -77,9 +77,8 @@ If you modify the source code and want to compile a new `.exe`, run PyInstaller 
 
 ```bash
 pip install pyinstaller
-pyinstaller --noconsole --onefile --add-data "icon.ico;." --add-data "icon.png;." --icon=icon.ico --name=RobloxPianoPlayer gui.py
+pyinstaller --noconsole --onefile --add-data "icon.ico;." --add-data "icon.png;." --name=RobloxPianoPlayer gui.py
 ```
-*(Note: Make sure your custom `icon.ico` and `icon.png` assets are present in the directory before compiling).*
 
 
 ---
