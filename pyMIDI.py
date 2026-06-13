@@ -316,7 +316,7 @@ class MidiFile:
     def save_song(self, song_file):
         print("Saving notes to", song_file)
         with codecs.open(song_file, "w", encoding='utf-8') as f:
-            f.write("playback_speed=1.1\n")
+            f.write("playback_speed=1.0\n")
             # Save original MIDI name as metadata comment
             midi_name = os.path.basename(self.midi_file)
             f.write(f"#original_midi={midi_name}\n")

@@ -438,7 +438,7 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             
         # Build button elements
         for idx, path in enumerate(mid_files):
-            display_name = path.name if len(path.name) <= 38 else path.name[:35] + "..."
+            display_name = path.stem if len(path.stem) <= 45 else path.stem[:42] + "..."
             btn = ctk.CTkButton(
                 self.file_list_frame,
                 text=display_name,
@@ -552,8 +552,8 @@ class RobloxAutoPlayerGUI(ctk.CTk):
         playSong.set_speed(value)
         
     def reset_speed(self):
-        playSong.set_speed(1.0)
-        self.speed_slider.set(1.0)
+        playSong.set_speed(playSong.origionalPlaybackSpeed)
+        self.speed_slider.set(playSong.origionalPlaybackSpeed)
 
     # --- Thread-Safe playSong.py Callback Receivers ---
     def cb_play_state(self, is_playing):
@@ -628,6 +628,9 @@ class RobloxAutoPlayerGUI(ctk.CTk):
                  f"Time: 0m 0s / {int(total_mins)}m {int(total_secs)}s"
         )
         self.progress_bar.set(0)
+        
+        # Update Reset button text with the original playback speed
+        self.reset_speed_btn.configure(text=f"Reset ({playSong.origionalPlaybackSpeed:.1f}x)")
         
     def update_status_badge(self, status):
         self.song_detail_label.configure(
