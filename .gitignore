@@ -18,3 +18,7 @@ Desktop.ini
 *.log
 scratch/
 temp/
+
+# Empty user folders (automatically created by executable / script on startup)
+midi/
+dist/midi/
