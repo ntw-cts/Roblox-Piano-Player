@@ -39,17 +39,11 @@ You can control playback globally at any time, even while focused inside the Rob
 ## 📂 Project Structure
 
 ```
-├── dist/
-│   ├── RobloxPianoPlayer.exe   # Standalone pre-compiled Windows executable
-│   └── midi/                   # Directory to place MIDI files (read by the executable)
-├── midi/                       # Directory to place MIDI files (read when running source)
 ├── gui.py                      # CustomTkinter graphical interface and hotkey mappings
 ├── playSong.py                 # Core playback engine, time-seeking, and key simulation
 ├── pyMIDI.py                   # MIDI parser, key-mapping, and sheet conversion
 ├── strip.py                    # MIDI track filter (filters non-piano tracks)
-├── icon.ico & icon.png         # Graphical assets for UI branding
-├── requirements.txt            # Python package dependencies
-└── RobloxAutoPlayer.spec       # PyInstaller build specification
+└── requirements.txt            # Python package dependencies
 ```
 
 ---
@@ -57,9 +51,10 @@ You can control playback globally at any time, even while focused inside the Rob
 ## 🚀 Getting Started
 
 ### Method 1: Using the Pre-compiled Executable (Recommended)
-1. Go to the `dist/` directory.
-2. Place your `.mid` files inside `dist/midi/`.
-3. Launch `RobloxPianoPlayer.exe` and enjoy!
+1. Go to the **Releases** tab of this GitHub repository and download the latest `RobloxPianoPlayer.exe` executable.
+2. Move the downloaded `.exe` file to any folder on your computer.
+3. Run `RobloxPianoPlayer.exe`. It will automatically create a `midi` folder right next to itself on its first launch.
+4. Put your `.mid` files inside that newly created `midi` folder, click **Scan Folder** in the app, and you are ready to play!
 
 ### Method 2: Running from Source
 To run or develop the project from source, you need **Python 3.10+** installed:
@@ -78,12 +73,14 @@ To run or develop the project from source, you need **Python 3.10+** installed:
 ---
 
 ## 🛠️ Compiling to a Standalone Executable
-If you modify the source code and want to compile a new `.exe`, run PyInstaller using the provided `.spec` configuration:
+If you modify the source code and want to compile a new `.exe`, run PyInstaller using:
 
 ```bash
-pyinstaller --clean RobloxAutoPlayer.spec
+pip install pyinstaller
+pyinstaller --noconsole --onefile --add-data "icon.ico;." --add-data "icon.png;." --icon=icon.ico --name=RobloxPianoPlayer gui.py
 ```
-The compiled output will be generated inside the `dist/` folder.
+*(Note: Make sure your custom `icon.ico` and `icon.png` assets are present in the directory before compiling).*
+
 
 ---
 
