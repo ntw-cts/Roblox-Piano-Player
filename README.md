@@ -16,7 +16,7 @@ Built with a modern dark-themed interface using **CustomTkinter**, this applicat
 - **Always on Top Toggle**: Keeps the controller window pinned above your Roblox client for seamless performance management.
 - **Smart Song Search & Playlist**: Dynamically loads files from the `midi/` directory, featuring a live search filter.
 - **Real-time Playback Status**: Visual progress bar tracking current playhead position, time elapsed, total duration, and total MIDI note count.
-- **Precise Speed Control**: Dynamically speed up or slow down song playback from `0.5x` to `2.0x` speed.
+- **Precise Speed Control**: Dynamically speed up or slow down song playback from `0.1x` to `5.0x` speed.
 - **Time-based Seeking**: Instantly jump forward or backward by `10 seconds` using the UI buttons or global hotkeys.
 - **Persistent Song Cache**: Automatically saves the last loaded song path to `song.txt` and recovers the original MIDI filename upon relaunch.
 
@@ -61,11 +61,13 @@ To run or develop the project from source, you need **Python 3.10+** installed:
 
 1. Clone or download this repository.
 2. Install the required dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
 3. Create a folder named `midi` in the root directory and place your `.mid` files inside it.
 4. Run the GUI:
+
    ```bash
    python gui.py
    ```
