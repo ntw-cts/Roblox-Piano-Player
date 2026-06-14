@@ -468,10 +468,24 @@ class RobloxAutoPlayerGUI(ctk.CTk):
 
     def select_midi(self, path):
         self.selected_midi = path
+        try:
+            resolved_path = Path(path).resolve()
+        except Exception:
+            resolved_path = path
+            
         # Toggle highlight colors
         for btn in self.file_buttons:
             if isinstance(btn, ctk.CTkButton):
-                if getattr(btn, 'midi_path', None) == path:
+                btn_path = getattr(btn, 'midi_path', None)
+                if btn_path:
+                    try:
+                        is_match = Path(btn_path).resolve() == resolved_path
+                    except Exception:
+                        is_match = btn_path == path
+                else:
+                    is_match = False
+                
+                if is_match:
                     btn.configure(fg_color="#3b82f6", hover_color="#2563eb")
                 else:
                     btn.configure(fg_color="#334155", hover_color="#475569")
@@ -634,12 +648,21 @@ class RobloxAutoPlayerGUI(ctk.CTk):
         self.reset_speed_btn.configure(text=f"Reset ({playSong.origionalPlaybackSpeed:.1f}x)")
         
         # Synchronize list selection with the loaded song
-        if playSong.song_display_name:
-            target_name = Path(playSong.song_display_name).name
+        ref_name = playSong.song_display_name if playSong.song_display_name else filename
+        if ref_name and Path(ref_name).name != "song.txt":
+            def normalize_name(n):
+                n_str = Path(n).name.lower()
+                if n_str.endswith(".mid"):
+                    n_str = n_str[:-4]
+                if n_str.endswith("_piano_only"):
+                    n_str = n_str[:-11]
+                return n_str.strip()
+
+            target_norm = normalize_name(ref_name)
             for btn in self.file_buttons:
                 if isinstance(btn, ctk.CTkButton):
-                    btn_filename = Path(btn.midi_path).name
-                    if btn_filename == target_name:
+                    btn_norm = normalize_name(btn.midi_path)
+                    if btn_norm == target_norm:
                         self.select_midi(btn.midi_path)
                         break
         
