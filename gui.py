@@ -387,7 +387,7 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             ("END", "Skip 10 seconds"),
             ("PAGE UP", "Increase playback speed"),
             ("PAGE DOWN", "Decrease playback speed"),
-            ("ESC", "Emergency Stop / Close auto-player")
+            ("ESC", "Emergency Stop (Double-press to close)")
         ]
         
         for idx, (key, desc) in enumerate(hotkeys_list):

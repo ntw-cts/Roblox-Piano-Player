@@ -32,7 +32,7 @@ You can control playback globally at any time, even while focused inside the Rob
 | **`INSERT`** | Toggle **Legit Mode** (anti-cheat protection) |
 | **`HOME`** | **Rewind 10 seconds** in current song |
 | **`END`** | **Skip 10 seconds** forward in current song |
-| **`ESCAPE`** | **Emergency Kill** (instantly terminates the program) |
+| **`ESCAPE`** | **Emergency Kill** (double-press within 0.6s to instantly exit) |
 
 ---
 

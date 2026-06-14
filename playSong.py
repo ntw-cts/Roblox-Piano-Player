@@ -519,8 +519,10 @@ def rewind(KeyboardEvent):
 def skip(KeyboardEvent):
     seek_by_time(10)
 
+last_esc_press_time = 0.0
+
 def onKeyPress(key):
-    global isPlaying, storedIndex, playback_speed, legitModeActive
+    global isPlaying, storedIndex, playback_speed, legitModeActive, last_esc_press_time
 
     try:
         if key == Key.delete:
@@ -535,13 +537,16 @@ def onKeyPress(key):
             slowDown(None)
         elif key == Key.insert:
             toggleLegitMode(None)
-        elif key == Key.f5:
-            runPyMIDI()
         elif key == Key.esc:
-            print("Emergency stop triggered. Exiting...")
-            release_all_held_keys()
-            import os
-            os._exit(0)
+            current_time = time.time()
+            if current_time - last_esc_press_time < 0.6:
+                print("Emergency stop triggered. Exiting...")
+                release_all_held_keys()
+                import os
+                os._exit(0)
+            else:
+                last_esc_press_time = current_time
+                print("ESC pressed once. Press again within 0.6s to exit.")
     except AttributeError:
         pass
 
@@ -554,8 +559,7 @@ def printControls():
         ("PAGE UP", "Speed Up"),
         ("PAGE DOWN", "Slow Down"),
         ("INSERT", "Toggle Legit Mode"),
-        ("F5", "Load New Song (NOT RECOMMENDED)"),
-        ("ESC", "Exit")
+        ("ESC", "Exit (Double-press)")
     ]
 
     print(f"\n{'=' * 20}\n{title.center(20)}\n{'=' * 20}")
