@@ -45,6 +45,7 @@ class RobloxAutoPlayerGUI(ctk.CTk):
         self.midi_files = []
         self.total_notes = 0
         self.total_duration = 0.0
+        self.hide_scrollbar_timer = None
         
         self.setup_sidebar()
         self.setup_main_panel()
@@ -148,13 +149,13 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             self.file_list_frame._parent_canvas.grid_configure(padx=(4, 4))
         except Exception:
             pass
-        self.file_list_frame.bind("<Enter>", self.update_scrollbar_visibility, add="+")
-        self.file_list_frame.bind("<Leave>", self.update_scrollbar_visibility, add="+")
+        self.file_list_frame.bind("<Enter>", self.show_scrollbar, add="+")
+        self.file_list_frame.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
         try:
-            self.file_list_frame._parent_canvas.bind("<Enter>", self.update_scrollbar_visibility, add="+")
-            self.file_list_frame._parent_canvas.bind("<Leave>", self.update_scrollbar_visibility, add="+")
-            self.file_list_frame._scrollbar.bind("<Enter>", self.update_scrollbar_visibility, add="+")
-            self.file_list_frame._scrollbar.bind("<Leave>", self.update_scrollbar_visibility, add="+")
+            self.file_list_frame._parent_canvas.bind("<Enter>", self.show_scrollbar, add="+")
+            self.file_list_frame._parent_canvas.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
+            self.file_list_frame._scrollbar.bind("<Enter>", self.show_scrollbar, add="+")
+            self.file_list_frame._scrollbar.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
         except Exception:
             pass
         
@@ -430,8 +431,8 @@ class RobloxAutoPlayerGUI(ctk.CTk):
                 text_color="#ef4444"
             )
             no_midi_lbl.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-            no_midi_lbl.bind("<Enter>", self.update_scrollbar_visibility, add="+")
-            no_midi_lbl.bind("<Leave>", self.update_scrollbar_visibility, add="+")
+            no_midi_lbl.bind("<Enter>", self.show_scrollbar, add="+")
+            no_midi_lbl.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
             self.file_buttons.append(no_midi_lbl)
             self.selected_midi = None
             return
@@ -451,8 +452,8 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             )
             btn.midi_path = path
             btn.grid(row=idx, column=0, padx=5, pady=4, sticky="ew")
-            btn.bind("<Enter>", self.update_scrollbar_visibility, add="+")
-            btn.bind("<Leave>", self.update_scrollbar_visibility, add="+")
+            btn.bind("<Enter>", self.show_scrollbar, add="+")
+            btn.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
             self.file_buttons.append(btn)
             
         # Select first MIDI item automatically
@@ -658,35 +659,30 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             )
         self.after(100, self.update_realtime_progress)
 
-    def is_mouse_in_frame(self):
+    def show_scrollbar(self, event=None):
+        if hasattr(self, 'hide_scrollbar_timer') and self.hide_scrollbar_timer is not None:
+            self.after_cancel(self.hide_scrollbar_timer)
+            self.hide_scrollbar_timer = None
         try:
-            mx, my = self.file_list_frame.winfo_pointerxy()
-            fx = self.file_list_frame.winfo_rootx()
-            fy = self.file_list_frame.winfo_rooty()
-            fw = self.file_list_frame.winfo_width()
-            fh = self.file_list_frame.winfo_height()
-            return fx <= mx <= fx + fw and fy <= my <= fy + fh
+            first, last = self.file_list_frame._scrollbar.get()
+            if last - first < 0.99:
+                self.file_list_frame._scrollbar.grid()
+                self.file_list_frame._parent_canvas.grid_configure(padx=(4, 0))
         except Exception:
-            return False
+            pass
 
-    def update_scrollbar_visibility(self, event=None):
-        if self.is_mouse_in_frame():
-            try:
-                first, last = self.file_list_frame._scrollbar.get()
-                if last - first < 0.99:
-                    self.file_list_frame._scrollbar.grid()
-                    self.file_list_frame._parent_canvas.grid_configure(padx=(4, 0))
-                else:
-                    self.file_list_frame._scrollbar.grid_remove()
-                    self.file_list_frame._parent_canvas.grid_configure(padx=(4, 4))
-            except Exception:
-                pass
-        else:
-            try:
-                self.file_list_frame._scrollbar.grid_remove()
-                self.file_list_frame._parent_canvas.grid_configure(padx=(4, 4))
-            except Exception:
-                pass
+    def hide_scrollbar_delayed(self, event=None):
+        if hasattr(self, 'hide_scrollbar_timer') and self.hide_scrollbar_timer is not None:
+            self.after_cancel(self.hide_scrollbar_timer)
+        self.hide_scrollbar_timer = self.after(150, self.do_hide_scrollbar)
+
+    def do_hide_scrollbar(self):
+        self.hide_scrollbar_timer = None
+        try:
+            self.file_list_frame._scrollbar.grid_remove()
+            self.file_list_frame._parent_canvas.grid_configure(padx=(4, 4))
+        except Exception:
+            pass
 
     def on_closing(self):
         playSong.set_playing(False)
