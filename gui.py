@@ -633,6 +633,16 @@ class RobloxAutoPlayerGUI(ctk.CTk):
         # Update Reset button text with the original playback speed
         self.reset_speed_btn.configure(text=f"Reset ({playSong.origionalPlaybackSpeed:.1f}x)")
         
+        # Synchronize list selection with the loaded song
+        if playSong.song_display_name:
+            target_name = Path(playSong.song_display_name).name
+            for btn in self.file_buttons:
+                if isinstance(btn, ctk.CTkButton):
+                    btn_filename = Path(btn.midi_path).name
+                    if btn_filename == target_name:
+                        self.select_midi(btn.midi_path)
+                        break
+        
     def update_status_badge(self, status):
         self.song_detail_label.configure(
             text=f"Notes: {self.total_notes}  |  Duration: {int(self.total_duration // 60)}m {int(self.total_duration % 60)}s  |  Status: {status}"
