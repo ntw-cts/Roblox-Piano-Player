@@ -456,8 +456,46 @@ class RobloxAutoPlayerGUI(ctk.CTk):
             btn.bind("<Leave>", self.hide_scrollbar_delayed, add="+")
             self.file_buttons.append(btn)
             
-        # Select first MIDI item automatically
-        if mid_files:
+        # Try to preserve the previous selection or match the loaded song
+        prev_selected = self.selected_midi
+        matched = False
+        
+        if prev_selected:
+            try:
+                prev_resolved = Path(prev_selected).resolve()
+            except Exception:
+                prev_resolved = prev_selected
+            for btn in self.file_buttons:
+                if isinstance(btn, ctk.CTkButton):
+                    try:
+                        btn_resolved = Path(btn.midi_path).resolve()
+                    except Exception:
+                        btn_resolved = btn.midi_path
+                    if btn_resolved == prev_resolved:
+                        self.select_midi(btn.midi_path)
+                        matched = True
+                        break
+                        
+        if not matched and playSong.song_display_name:
+            def normalize_name(n):
+                n_str = Path(n).name.lower()
+                if n_str.endswith(".mid"):
+                    n_str = n_str[:-4]
+                if n_str.endswith("_piano_only"):
+                    n_str = n_str[:-11]
+                return n_str.strip()
+
+            target_norm = normalize_name(playSong.song_display_name)
+            for btn in self.file_buttons:
+                if isinstance(btn, ctk.CTkButton):
+                    btn_norm = normalize_name(btn.midi_path)
+                    if btn_norm == target_norm:
+                        self.select_midi(btn.midi_path)
+                        matched = True
+                        break
+
+        # Fallback to selecting the first MIDI file if no selection was matched
+        if not matched and mid_files:
             self.select_midi(mid_files[0])
 
     def open_midi_folder(self):
